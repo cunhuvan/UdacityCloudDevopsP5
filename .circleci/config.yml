@@ -39,16 +39,16 @@ jobs:
   build-image:
     docker:
       # Use the same Docker base as the project
-      - image: python:3.7.3-stretch
+      - image: docker:20.10.8
     working_directory: ~/repo
     steps:
       - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      # Install Docker CLI
+      - run:
+          name: Install Docker
+          command: |
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sh get-docker.sh
       - run:
           name: build docker image
           command: |
@@ -63,4 +63,8 @@ workflows:
     jobs:
       - build-source
       - build-image:
-          requires: [build-source]
+          requires: [build-source]          
+          filters:
+            branches:
+              only:
+                - main
