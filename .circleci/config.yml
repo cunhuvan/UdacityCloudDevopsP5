@@ -2,9 +2,9 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
 jobs:
-  build:
+  build-source:
     docker:
       # Use the same Docker base as the project
       - image: python:3.7.3-stretch
@@ -36,7 +36,7 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
-  build:
+  build-image:
     docker:
       # Use the same Docker base as the project
       - image: python:3.7.3-stretch
@@ -57,4 +57,9 @@ jobs:
             docker login -u tungnt4 -p WalletApp@1234
             docker tag capstone "tungnt4/capstone:v1.0.0"
             docker push "tungnt4/capstone:v1.0.0"
-      
+
+workflows:
+  default:
+    jobs:
+      - build-source
+      - build-image
