@@ -36,3 +36,25 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+  build:
+    docker:
+      # Use the same Docker base as the project
+      - image: python:3.7.3-stretch
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: build docker image
+          command: |
+            docker build --tag=capstone .
+            docker image list
+            docker login -u tungnt4 -p WalletApp@1234
+            docker tag capstone "tungnt4/capstone:v1.0.0"
+            docker push "tungnt4/capstone:v1.0.0"
+      
