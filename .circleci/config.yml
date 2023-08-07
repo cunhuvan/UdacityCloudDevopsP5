@@ -63,3 +63,4 @@ workflows:
     jobs:
       - build-source
       - build-image
+          requires: [build-source]
