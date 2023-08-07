@@ -78,8 +78,8 @@ jobs:
           name: Push application Docker image
           command: |
             docker login -u tungnt4 -p WalletApp@1234
-            docker tag capstone "tungnt4/capstone:v1.0.0"
-            docker push "tungnt4/capstone:v1.0.0"
+            docker tag app "tungnt4/app:v1.0.0"
+            docker push "tungnt4/app:v1.0.0"
 
 workflows:
   default:
