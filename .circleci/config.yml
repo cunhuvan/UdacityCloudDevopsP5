@@ -59,7 +59,7 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-source
+      - build-source
       - build-image:
           # requires: [build-source]          
           filters:
