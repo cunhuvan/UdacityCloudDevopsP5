@@ -68,41 +68,41 @@ jobs:
           name: Ensure EKS network exists
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/network.yml \
+              --template-file .circleci/files/network.yml \
               --tags project=${ENVIRONMENT_NAME}-project \
               --stack-name "${ENVIRONMENT_NAME}-eks-network" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/network-parameters.json
+              --parameter-overrides file://.circleci/files/network-parameters.json
       - run:
           name: Ensure EKS Cluster exists
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/cluster.yml \
+              --template-file .circleci/files/cluster.yml \
               --tags project=${ENVIRONMENT_NAME}-project \
               --stack-name "${ENVIRONMENT_NAME}-eks-cluster" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/cluster-parameters.json \
+              --parameter-overrides file://.circleci/files/cluster-parameters.json \
               --capabilities CAPABILITY_NAMED_IAM
           no_output_timeout: 15m
       - run:
           name: Ensure Nodegroup exists
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/nodegroup.yml \
+              --template-file .circleci/files/nodegroup.yml \
               --tags project=${ENVIRONMENT_NAME}-project \
               --stack-name "${ENVIRONMENT_NAME}-eks-nodegroup" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/nodegroup-parameters.json \
+              --parameter-overrides file://.circleci/files/nodegroup-parameters.json \
               --capabilities CAPABILITY_NAMED_IAM
       - run:
           name: Ensure management instances exists
           command: |
             aws cloudformation deploy \
-              --template-file cloudformation/management.yml \
+              --template-file .circleci/files/management.yml \
               --tags project=${ENVIRONMENT_NAME}-project \
               --stack-name "${ENVIRONMENT_NAME}-eks-management" \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides file://cloudformation/management-parameters.json \
+              --parameter-overrides file://.circleci/files/management-parameters.json \
               --output text >> ~/checkIfDeployed.txt
             cat ~/checkIfDeployed.txt
       - run:
