@@ -70,8 +70,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files//network.yml \
-              --tags project=${ENVIRONMENT_NAME}-project \
-              --stack-name "${ENVIRONMENT_NAME}-eks-network" \
+              --tags project=${PROJECT_NAME}-project \
+              --stack-name "${PROJECT_NAME}-eks-network" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files//network-parameters.json
       - run:
@@ -79,8 +79,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files//cluster.yml \
-              --tags project=${ENVIRONMENT_NAME}-project \
-              --stack-name "${ENVIRONMENT_NAME}-eks-cluster" \
+              --tags project=${PROJECT_NAME}-project \
+              --stack-name "${PROJECT_NAME}-eks-cluster" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files//cluster-parameters.json \
               --capabilities CAPABILITY_NAMED_IAM
@@ -90,8 +90,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files//nodegroup.yml \
-              --tags project=${ENVIRONMENT_NAME}-project \
-              --stack-name "${ENVIRONMENT_NAME}-eks-nodegroup" \
+              --tags project=${PROJECT_NAME}-project \
+              --stack-name "${PROJECT_NAME}-eks-nodegroup" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files//nodegroup-parameters.json \
               --capabilities CAPABILITY_NAMED_IAM
@@ -100,8 +100,8 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files//management.yml \
-              --tags project=${ENVIRONMENT_NAME}-project \
-              --stack-name "${ENVIRONMENT_NAME}-eks-management" \
+              --tags project=${PROJECT_NAME}-project \
+              --stack-name "${PROJECT_NAME}-eks-management" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files//management-parameters.json \
               --output text >> ~/checkIfDeployed.txt
@@ -113,7 +113,7 @@ jobs:
             aws ec2 describe-instances \
               --region "${AWS_DEFAULT_REGION}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Name,Values=${ENVIRONMENT_NAME}-management*" \
+              --filters "Name=tag:Name,Values=${PROJECT_NAME}-management*" \
               --output text >> ~/inventory.txt
             cat ~/inventory.txt
       - persist_to_workspace:
