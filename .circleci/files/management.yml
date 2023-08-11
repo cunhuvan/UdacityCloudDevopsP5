@@ -54,3 +54,15 @@ Resources:
           Value: !Sub ${EnvironmentName}-management2
         - Key: Project
           Value: !Ref EnvironmentName
+
+  HostName:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.small
+      SecurityGroups:
+        - Ref: InstanceSecurityGroup
+      KeyName: !Ref SSHKeyName
+      ImageId: !Ref amiImageId
+      Tags:
+        - Key: Name
+          Value: HostName
