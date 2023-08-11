@@ -163,4 +163,4 @@ workflows:
                 - main
       - deploy-infra
       - configure-infra:
-          requires: deploy-infra
+          requires: [deploy-infra]
