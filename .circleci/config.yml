@@ -118,7 +118,7 @@ jobs:
               --output text >> inventory.txt
             cat inventory.txt
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
             - .circleci/ansible/inventory.txt
             - checkIfDeployed.txt
@@ -132,7 +132,7 @@ jobs:
           fingerprints:
             - "fd:13:b9:8c:0f:bd:cf:67:cb:a1:fe:1f:20:68:0f:c5"
       - attach_workspace:
-          at: ~/
+          at: .
       - run:
           name: Install dependencies
           command: |
@@ -161,7 +161,7 @@ jobs:
           fingerprints:
             - "fd:13:b9:8c:0f:bd:cf:67:cb:a1:fe:1f:20:68:0f:c5"
       - attach_workspace:
-          at: ~/
+          at: .
       - run:
           name: Install dependencies
           command: |
@@ -199,7 +199,7 @@ jobs:
             ansible-playbook -i inventory.txt save-elb-dns.yml
             cat ~/elb_dns.txt
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
             - elb_dns.txt
 
