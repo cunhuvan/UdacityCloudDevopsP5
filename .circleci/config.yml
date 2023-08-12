@@ -243,4 +243,4 @@ workflows:
       - configure-cluster:
           requires: [configure-infra]
       - deploy-docker:
-          requires: [configure-cluster]
+          requires: [configure-cluster, build-image]
