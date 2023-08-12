@@ -125,7 +125,7 @@ jobs:
             
   configure-infra:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.10.12-alpine
     steps:
       - checkout
       - add_ssh_keys:
@@ -228,12 +228,12 @@ workflows:
   default:
     jobs:
       # - build-source
-      - build-image:
-          # requires: [build-source]          
-          filters:
-            branches:
-              only:
-                - main
+      # - build-image:
+      #     # requires: [build-source]          
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
       - deploy-infra
       - configure-infra:
           requires: [deploy-infra]
