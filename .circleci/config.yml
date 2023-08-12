@@ -121,7 +121,7 @@ jobs:
           root: .
           paths:
             - .circleci/ansible/inventory.txt
-            - ~/checkIfDeployed.txt
+            - checkIfDeployed.txt
             
   configure-infra:
     docker:
