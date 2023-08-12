@@ -104,8 +104,8 @@ jobs:
               --stack-name "${PROJECT_NAME}-eks-management" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files/management-parameters.json \
-              --output text >> ~/checkIfDeployed.txt
-            cat ~/checkIfDeployed.txt
+              --output text >> ./checkIfDeployed.txt
+            cat ./checkIfDeployed.txt
       - run:
           name: Extract the IPs of the management instances for Ansible
           working_directory: ./.circleci/ansible
@@ -141,7 +141,7 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
+            if grep -q "No changes to deploy" ./checkIfDeployed.txt
               then
                 cat inventory.txt
                 echo "Our management instances are already configured."
@@ -168,7 +168,7 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
+            if grep -q "No changes to deploy" ./checkIfDeployed.txt
               then
                 cat inventory.txt
                 echo "Our management instances are already configured."
@@ -180,7 +180,7 @@ jobs:
           name: Wait for LoadBalancer's domain to become reachable
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
+            if grep -q "No changes to deploy" ./checkIfDeployed.txt
               then
                 cat inventory.txt
                 echo "Our management instances are already configured."
