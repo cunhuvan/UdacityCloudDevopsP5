@@ -104,24 +104,24 @@ jobs:
               --stack-name "${PROJECT_NAME}-eks-management" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files/management-parameters.json \
-              --output text >> ./.circleci/ansible/checkIfDeployed.txt
-            cat ./.circleci/ansible/checkIfDeployed.txt
+              --output text >> ~/checkIfDeployed.txt
+            cat ~/checkIfDeployed.txt
       - run:
           name: Extract the IPs of the management instances for Ansible
           working_directory: ./.circleci/ansible
           command: |
-            echo [management] > inventory.txt
+            echo [management] > ~/inventory.txt
             aws ec2 describe-instances \
               --region "${AWS_DEFAULT_REGION}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values=${PROJECT_NAME}-management*" \
-              --output text >> inventory.txt
-            cat inventory.txt
+              --output text >> ~/inventory.txt
+            cat ~/inventory.txt
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
-            - .circleci/ansible/inventory.txt
-            - .circleci/ansible/checkIfDeployed.txt
+            - inventory.txt
+            - checkIfDeployed.txt
             
   configure-infra:
     docker:
@@ -141,13 +141,13 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" .circleci/ansible/checkIfDeployed.txt
+            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
               then
-                cat inventory.txt
+                cat ~/inventory.txt
                 echo "Our management instances are already configured."
               else
-                cat inventory.txt
-                ansible-playbook -i inventory.txt configure-server.yml
+                cat ~/inventory.txt
+                ansible-playbook -i ~/inventory.txt configure-server.yml
               fi
 
   configure-cluster:
@@ -168,24 +168,24 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" .circleci/ansible/checkIfDeployed.txt
+            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
               then
-                cat inventory.txt
+                cat ~/inventory.txt
                 echo "Our management instances are already configured."
               else
-                cat inventory.txt
-                ansible-playbook -i inventory.txt configure-cluster.yml
+                cat ~/inventory.txt
+                ansible-playbook -i ~/inventory.txt configure-cluster.yml
               fi
       - run:
           name: Wait for LoadBalancer's domain to become reachable
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" .circleci/ansible/checkIfDeployed.txt
+            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
               then
-                cat inventory.txt
+                cat ~/inventory.txt
                 echo "Our management instances are already configured."
               else
-                cat inventory.txt
+                cat ~/inventory.txt
                 echo "Wait 60 seconds..."
                 sleep 60
               fi
@@ -193,13 +193,13 @@ jobs:
           name: Display the LoadBalancer's DNS name
           working_directory: ./.circleci/ansible
           command: |
-            cat inventory.txt
-            ansible-playbook -i inventory.txt save-elb-dns.yml
-            cat .circleci/ansible/elb_dns.txt
+            cat ~/inventory.txt
+            ansible-playbook -i ~/inventory.txt save-elb-dns.yml
+            cat ./elb_dns.txt
       - persist_to_workspace:
           root: .
           paths:
-            - .circleci/ansible/elb_dns.txt
+            - elb_dns.txt
 
   deploy-docker:
     docker:
@@ -210,7 +210,7 @@ jobs:
           fingerprints:
             - "b9:a8:b8:cf:fa:6f:69:9e:66:4f:10:0d:44:7a:d6:2d"
       - attach_workspace:
-          at: ~/
+          at: .
       - run:
           name: Install dependencies
           command: |
@@ -219,7 +219,7 @@ jobs:
           name: Deploy newest Docker Image
           working_directory: ./.circleci/ansible
           command: |
-            cat inventory.txt
+            cat ~/inventory.txt
             ansible-playbook -i ~/inventory.txt deploy-app.yml
           no_output_timeout: 2m
 
@@ -233,7 +233,11 @@ workflows:
             branches:
               only:
                 - main
-      - deploy-infra
+      - deploy-infra:
+          filters:
+            branches:
+              only:
+                - main
       - configure-infra:
           requires: [deploy-infra]
       - configure-cluster:
