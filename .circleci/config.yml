@@ -141,16 +141,14 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
-            # if grep -q "No changes to deploy" ~/checkIfDeployed.txt
-            #   then
-            #     cat inventory.txt
-            #     echo "Our management instances are already configured."
-            #   else
-            #     cat inventory.txt
-            #     ansible-playbook -i inventory.txt configure-server.yml
-            #   fi
+            if grep -q "No changes to deploy" ~/checkIfDeployed.txt
+              then
+                cat inventory.txt
+                echo "Our management instances are already configured."
+              else
+                cat inventory.txt
+                ansible-playbook -i inventory.txt configure-server.yml
+              fi
 
   configure-cluster:
     docker:
@@ -202,6 +200,7 @@ jobs:
           root: .
           paths:
             - elb_dns.txt
+
   deploy-docker:
     docker:
       - image: python:3.7-alpine3.11
@@ -227,13 +226,15 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-source
-      # - build-image:
-      #     # requires: [build-source]          
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
+      - build-source
+      - build-image:
+          requires: [build-source]          
+          filters:
+            branches:
+              only:
+                - main
       - deploy-infra
       - configure-infra:
           requires: [deploy-infra]
+      - configure-cluster:
+          requires: [configure-infra]
