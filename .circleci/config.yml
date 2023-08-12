@@ -132,7 +132,7 @@ jobs:
           fingerprints:
             - "b9:a8:b8:cf:fa:6f:69:9e:66:4f:10:0d:44:7a:d6:2d"
       - attach_workspace:
-          at: .
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -159,7 +159,7 @@ jobs:
           fingerprints:
             - "b9:a8:b8:cf:fa:6f:69:9e:66:4f:10:0d:44:7a:d6:2d"
       - attach_workspace:
-          at: .
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -210,7 +210,7 @@ jobs:
           fingerprints:
             - "b9:a8:b8:cf:fa:6f:69:9e:66:4f:10:0d:44:7a:d6:2d"
       - attach_workspace:
-          at: .
+          at: ~/
       - run:
           name: Install dependencies
           command: |
