@@ -43,4 +43,9 @@ After the EKS-Cluster has been successfully configured using Ansible within the 
 ![LB2](./Screenshoots/LB2.png)
 
 Public LB DNS: abd2adf4ef6304291b77b0f4881bf2b9-2043865142.us-east-1.elb.amazonaws.com
+
+#### Application old
 ![Application](./Screenshoots/Application.png)
+
+#### Application after new deploy
+![ApplicationNewDeploy](./Screenshoots/ApplicationNewDeploy.png)
