@@ -104,8 +104,8 @@ jobs:
               --stack-name "${PROJECT_NAME}-eks-management" \
               --region ${AWS_DEFAULT_REGION} \
               --parameter-overrides file://.circleci/files/management-parameters.json \
-              --output text >> ./checkIfDeployed.txt
-            cat ./checkIfDeployed.txt
+              --output text >> ./.circleci/ansible/checkIfDeployed.txt
+            cat ./.circleci/ansible/checkIfDeployed.txt
       - run:
           name: Extract the IPs of the management instances for Ansible
           working_directory: ./.circleci/ansible
@@ -121,7 +121,7 @@ jobs:
           root: .
           paths:
             - .circleci/ansible/inventory.txt
-            - checkIfDeployed.txt
+            - .circleci/ansible/checkIfDeployed.txt
             
   configure-infra:
     docker:
@@ -141,7 +141,7 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" ./checkIfDeployed.txt
+            if grep -q "No changes to deploy" .circleci/ansible/checkIfDeployed.txt
               then
                 cat inventory.txt
                 echo "Our management instances are already configured."
@@ -168,7 +168,7 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" ./checkIfDeployed.txt
+            if grep -q "No changes to deploy" .circleci/ansible/checkIfDeployed.txt
               then
                 cat inventory.txt
                 echo "Our management instances are already configured."
@@ -180,7 +180,7 @@ jobs:
           name: Wait for LoadBalancer's domain to become reachable
           working_directory: ./.circleci/ansible
           command: |
-            if grep -q "No changes to deploy" ./checkIfDeployed.txt
+            if grep -q "No changes to deploy" .circleci/ansible/checkIfDeployed.txt
               then
                 cat inventory.txt
                 echo "Our management instances are already configured."
@@ -195,11 +195,11 @@ jobs:
           command: |
             cat inventory.txt
             ansible-playbook -i inventory.txt save-elb-dns.yml
-            cat ~/elb_dns.txt
+            cat .circleci/ansible/elb_dns.txt
       - persist_to_workspace:
           root: .
           paths:
-            - elb_dns.txt
+            - .circleci/ansible/elb_dns.txt
 
   deploy-docker:
     docker:
