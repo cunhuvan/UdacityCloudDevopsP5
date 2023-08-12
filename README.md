@@ -32,6 +32,10 @@ I used CircleCi to create a CI/CD Pipeline to build, test and deploy system.
 ## Linting Success
 ![LintSuccess](./Screenshoots/LintSuccess.png)
 
+## Image push to DockerHub
+![DockerHub](./Screenshoots/DockerHub.png)
+
+
 ## Access the Application
 After the EKS-Cluster has been successfully configured using Ansible within the CI/CD Pipeline, I get LB info as below:
 
